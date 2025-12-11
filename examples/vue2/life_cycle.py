@@ -30,4 +30,9 @@ def server_exited(**state):
     print("on_server_exited")
 
 
+@ctrl.add("on_error")
+def error(message):
+    print(f"on_error: {message}")
+
+
 server.start()
