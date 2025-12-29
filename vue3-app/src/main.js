@@ -89,6 +89,9 @@ async function start() {
     return;
   }
 
+  // Capture uncaught Vue errors and propagate them up
+  trame.app.config.errorHandler = trame.on_error;
+
   // Forward JS error to Python
   const _error = console.error;
   console.error = (...args) => {

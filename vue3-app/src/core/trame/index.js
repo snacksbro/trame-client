@@ -88,6 +88,16 @@ export function createTrameInstance(app) {
       .Trame.trigger(name, decoratedArgs, decoratedKwargs);
   };
 
+  // Send uncaught Vue errors to life_cycle.on_error
+  trame.on_error = (err, _, __) => {
+    const errData = err.data;
+    if (trame.client.isConnected()) {
+      trame.client
+        .getRemote()
+        .Trame.sendError(`${errData.trace}\n${errData.exception}`);
+    }
+  };
+
   // Make it available globally
   window.trame = trame;
 
