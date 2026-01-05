@@ -90,11 +90,17 @@ export function createTrameInstance(app) {
 
   // Send uncaught Vue errors to life_cycle.on_error
   trame.on_error = (err, _, __) => {
-    const errData = err.data;
+    let errorMessage;
+    if (err.data !== undefined) {
+      // Python errors will have data, which has the traceback and exception name
+      errorMessage = `${err.data.trace}\n${err.data.exception}`;
+    } else {
+      // JS errors will have .stack, containing their traceback
+      errorMessage = err.stack;
+    }
+
     if (trame.client.isConnected()) {
-      trame.client
-        .getRemote()
-        .Trame.sendError(`${errData.trace}\n${errData.exception}`);
+      trame.client.getRemote().Trame.sendError(errorMessage);
     }
   };
 
